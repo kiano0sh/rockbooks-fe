@@ -1,23 +1,18 @@
 import { FC } from "react";
 import { Outlet } from "react-router";
 
-const AuthLayout: FC = ({ children }): JSX.Element => {
+const AuthLayout: FC = (): JSX.Element => {
   return (
-    <div className="bg-gray-400">
-      <div>
-        <div className="mt-2">
-          <img src="/icons/logo.svg" alt="rockbooks-logo" />
-          {children}
-        </div>
-
-        <div>
-          <div className="divide-x-2" />
-          <p color="neutral.main">
-            Rock all the books in the world with RockBooks
-          </p>
-        </div>
+    <div className="h-screen bg-gray-100 flex flex-col justify-center items-center">
+      <div className="flex flex-col items-center">
+        <img src="/icons/logo.svg" alt="rockbooks-logo" className="w-80" />
+        <Outlet />
       </div>
-      <Outlet />
+
+      <div>
+        <div className="mt-20" />
+        <p>Rock all the books in the world with RockBooks</p>
+      </div>
     </div>
   );
 };

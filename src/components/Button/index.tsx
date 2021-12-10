@@ -7,9 +7,13 @@ interface IButton {
 }
 
 const Button: FC<IButton> = ({ onClick, name, type = "positive" }) => {
-  const buttonColor = type === "positive" ? "bg-blue-600" : "bg-red-600";
   return (
-    <button className={`${buttonColor} border-0 p-0`} onClick={onClick}>
+    <button
+      className={`${
+        type === "positive" ? "bg-blue-100" : "bg-red-100"
+      } border-0 w-full py-2 rounded-lg mt-5`}
+      onClick={onClick}
+    >
       {name}
     </button>
   );

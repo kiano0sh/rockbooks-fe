@@ -18,21 +18,21 @@ const Login: FC = () => {
       <TextInput
         name={"displayName"}
         type="text"
-        labelTitle="نام یا لقب شما"
+        placeholder="نام یا لقب شما"
         error={""}
         className="my-2 w-full"
       />
       <TextInput
         name={"email"}
         type="email"
-        labelTitle="ایمیل"
+        placeholder="ایمیل"
         error={""}
         className="my-2 w-full"
       />
       <TextInput
         name={"password"}
         type="password"
-        labelTitle="رمز عبور"
+        placeholder="رمز عبور"
         error={""}
         className="my-2 w-full"
       />

@@ -8,12 +8,12 @@ type InputTypes = Exclude<
 
 interface ITextInput extends IClassName, Partial<UseFormRegisterReturn> {
   type: InputTypes;
-  labelTitle: string;
+  placeholder: string;
   error?: string;
 }
 
 const TextInput = forwardRef<HTMLInputElement, ITextInput>(
-  ({ type, onChange, error, labelTitle, className = "", ...props }, ref) => {
+  ({ type, onChange, error, placeholder, className = "", ...props }, ref) => {
     return (
       <>
         <input
@@ -22,7 +22,7 @@ const TextInput = forwardRef<HTMLInputElement, ITextInput>(
             error ? "border-red-600" : ""
           } focus:border-blue-500 rounded-lg ${className}`}
           onChange={onChange}
-          placeholder={labelTitle}
+          placeholder={placeholder}
           {...props}
           ref={ref}
         />

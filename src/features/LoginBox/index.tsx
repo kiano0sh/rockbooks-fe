@@ -1,16 +1,17 @@
 import Button from "components/Button";
 import Card from "components/Card";
+import Form from "components/Form";
 import TextInput from "components/TextInput";
-import { useUserLoginMutation } from "graphql/generated/graphql";
-import { FC } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
-import { AuthRoutePaths } from "routes";
 import {
   ErrorMessageInvalidEmail,
   ErrorMessageRequiredField,
 } from "consts/errors";
 import { ValidationPatternEmail } from "consts/validationPatterns";
+import { useUserLoginMutation } from "graphql/generated/graphql";
+import { FC } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { AuthRoutePaths } from "routes";
 
 type LoginFormData = {
   email: string;
@@ -26,7 +27,8 @@ const Login: FC = () => {
   } = useForm<LoginFormData>({ mode: "onBlur" });
 
   const [loginMutation, data] = useUserLoginMutation();
-  // console.log(data, "a");
+  console.log(data, "a");
+  console.log(data.error?.message);
 
   const onSubmit = (data: LoginFormData) => {
     loginMutation({ variables: { input: data } });
@@ -37,10 +39,14 @@ const Login: FC = () => {
 
   return (
     <Card className="w-96">
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+      <Form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full"
+        error={data.error?.message}
+      >
         <TextInput
           type="email"
-          labelTitle="ایمیل"
+          placeholder="ایمیل"
           error={errors.email?.message}
           className="my-2 w-full"
           {...register("email", {
@@ -53,7 +59,7 @@ const Login: FC = () => {
         />
         <TextInput
           type="password"
-          labelTitle="رمز عبور"
+          placeholder="رمز عبور"
           error={errors.password?.message}
           className="my-2 w-full"
           {...register("password", {
@@ -67,13 +73,13 @@ const Login: FC = () => {
           name="ورود"
           disabled={!isValid}
         />
-        <Button
-          className="mt-6"
-          kind="ghost"
-          name="ثبت نام"
-          onClick={onRegisterButtonClicked}
-        />
-      </form>
+      </Form>
+      <Button
+        className="mt-6"
+        kind="ghost"
+        name="ثبت نام"
+        onClick={onRegisterButtonClicked}
+      />
     </Card>
   );
 };

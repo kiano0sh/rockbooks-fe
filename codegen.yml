@@ -1,0 +1,18 @@
+overwrite: true
+schema: "http://localhost:8080/query"
+documents: "src/graphql/*/*.{tsx,ts,json}"
+generates:
+  src/graphql/generated/graphql.tsx:
+    plugins:
+      - typescript
+      - typescript-resolvers
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      contextType: ./context#IGraphQLResolverContext
+      typesPrefix: IGraphQL
+      withHooks: true
+      withHOC: false
+      withComponent: false
+      documentMode: documentNode
+      optimizeDocumentNode: true

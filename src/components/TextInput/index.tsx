@@ -5,7 +5,7 @@ type InputTypes = Exclude<
   "checkbox" | "checkbox" | "radio" | "submit" | "button"
 >;
 
-interface ITextInput {
+interface ITextInput extends IClassName {
   type: InputTypes;
   onChange: () => void;
   labelTitle: string;
@@ -13,14 +13,20 @@ interface ITextInput {
   error?: string;
 }
 
-const TextInput: FC<ITextInput> = ({ type, onChange, error, labelTitle }) => {
+const TextInput: FC<ITextInput> = ({
+  type,
+  onChange,
+  error,
+  labelTitle,
+  className = "",
+}) => {
   return (
     <>
       <input
         type={type}
-        className={`border-2 p-2 my-2 ${
+        className={`border-2 p-2 ${
           error ? "border-red-600" : ""
-        } focus:border-blue-500 rounded-lg`}
+        } focus:border-blue-500 rounded-lg ${className}`}
         onChange={onChange}
         placeholder={labelTitle}
       />

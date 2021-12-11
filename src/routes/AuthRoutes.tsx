@@ -1,15 +1,10 @@
 import AuthLayout from "layouts/AuthLayout";
 import { FC, lazy, Suspense, useEffect } from "react";
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
+import { AuthRoutePaths } from ".";
 
 const LoginPage = lazy(() => import("pages/LoginPage"));
 const RegisterPage = lazy(() => import("pages/RegisterPage"));
-
-export enum AuthRoutePaths {
-  root = "/",
-  login = "login",
-  register = "register",
-}
 
 const AuthRoutes: FC = (): JSX.Element => {
   const location = useLocation();

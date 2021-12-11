@@ -8,9 +8,6 @@ import { AuthRoutePaths } from "routes";
 const Login: FC = () => {
   const navigate = useNavigate();
 
-  const onDisplayNameChange = () => {};
-  const onEmailChange = () => {};
-  const onPasswordChange = () => {};
   const onSubmit = () => {};
   const onLoginButtonClicked = () => {
     navigate(AuthRoutePaths.login);
@@ -19,38 +16,36 @@ const Login: FC = () => {
   return (
     <Card className="w-96">
       <TextInput
+        name={"displayName"}
         type="text"
-        onChange={onDisplayNameChange}
-        inputId="displayName"
         labelTitle="نام یا لقب شما"
         error={""}
         className="my-2 w-full"
       />
       <TextInput
+        name={"email"}
         type="email"
-        onChange={onEmailChange}
-        inputId="email"
         labelTitle="ایمیل"
         error={""}
         className="my-2 w-full"
       />
       <TextInput
+        name={"password"}
         type="password"
-        onChange={onPasswordChange}
-        inputId="password"
         labelTitle="رمز عبور"
         error={""}
         className="my-2 w-full"
       />
       <Button
         className="mt-2"
-        type="positive"
+        kind="positive"
+        type="submit"
         name="ثبت نام"
         onClick={onSubmit}
       />
       <Button
         className="mt-6"
-        type="ghost"
+        kind="ghost"
         name="ورود"
         onClick={onLoginButtonClicked}
       />

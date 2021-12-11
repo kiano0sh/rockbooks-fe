@@ -3,18 +3,22 @@ import { setContext } from "@apollo/client/link/context";
 import { getEnvVariable } from "utils/env";
 
 const httpLink = createHttpLink({
-  uri: getEnvVariable("REACT_APP_GRAPHQL_SERVER", "http://localhost:8080/"),
+  uri: getEnvVariable(
+    "REACT_APP_GRAPHQL_SERVER",
+    "http://localhost:8080/graphql"
+  ),
 });
 
-const authLink = setContext((_, { headers }) => {
+const authLink = setContext((_, { headers: passedHeaders }) => {
   // get the authentication token from local storage if it exists
   const token = localStorage.getItem("token");
   // return the headers to the context so httpLink can read them
+  const headers = token
+    ? { ...passedHeaders, authorization: `Bearer ${token}` }
+    : { ...passedHeaders };
+
   return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : "",
-    },
+    headers,
   };
 });
 

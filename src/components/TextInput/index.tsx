@@ -1,38 +1,35 @@
-import { FC, HTMLInputTypeAttribute } from "react";
+import { HTMLInputTypeAttribute, forwardRef } from "react";
+import { UseFormRegisterReturn } from "react-hook-form";
 
 type InputTypes = Exclude<
   HTMLInputTypeAttribute,
   "checkbox" | "checkbox" | "radio" | "submit" | "button"
 >;
 
-interface ITextInput extends IClassName {
+interface ITextInput extends IClassName, Partial<UseFormRegisterReturn> {
   type: InputTypes;
-  onChange: () => void;
   labelTitle: string;
-  inputId: string;
   error?: string;
 }
 
-const TextInput: FC<ITextInput> = ({
-  type,
-  onChange,
-  error,
-  labelTitle,
-  className = "",
-}) => {
-  return (
-    <>
-      <input
-        type={type}
-        className={`border-2 p-2 ${
-          error ? "border-red-600" : ""
-        } focus:border-blue-500 rounded-lg ${className}`}
-        onChange={onChange}
-        placeholder={labelTitle}
-      />
-      {error && <p className="bg-red-600">{error}</p>}
-    </>
-  );
-};
+const TextInput = forwardRef<HTMLInputElement, ITextInput>(
+  ({ type, onChange, error, labelTitle, className = "", ...props }, ref) => {
+    return (
+      <>
+        <input
+          type={type}
+          className={`border-2 p-2 ${
+            error ? "border-red-600" : ""
+          } focus:border-blue-500 rounded-lg ${className}`}
+          onChange={onChange}
+          placeholder={labelTitle}
+          {...props}
+          ref={ref}
+        />
+        {error && <p className="text-red-600">{error}</p>}
+      </>
+    );
+  }
+);
 
 export default TextInput;

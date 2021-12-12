@@ -1,48 +1,97 @@
 import Button from "components/Button";
 import Card from "components/Card";
+import Form from "components/Form";
 import TextInput from "components/TextInput";
+import {
+  ErrorMessageInvalidEmail,
+  ErrorMessageMaxLength,
+  ErrorMessageRequiredField,
+} from "consts/errors";
+import { ValidationPatternEmail } from "consts/validationPatterns";
+import { useUserRegisterMutation } from "graphql/generated/graphql";
+import { useLogin } from "hooks/useLogin";
 import { FC } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { AuthRoutePaths } from "routes";
 
-const Login: FC = () => {
+type RegisterFormData = {
+  displayName: string;
+  email: string;
+  password: string;
+};
+
+const Register: FC = () => {
   const navigate = useNavigate();
 
-  const onSubmit = () => {};
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<RegisterFormData>({ mode: "onBlur" });
+
+  const [registerMutation, result] = useUserRegisterMutation();
+
+  useLogin(result.data?.register);
+
+  const onSubmit = (data: RegisterFormData) => {
+    registerMutation({ variables: { input: data } });
+  };
+
   const onLoginButtonClicked = () => {
     navigate(AuthRoutePaths.login);
   };
 
   return (
     <Card className="w-96">
-      <TextInput
-        name={"displayName"}
-        type="text"
-        placeholder="نام یا لقب شما"
-        error={""}
-        className="my-2 w-full"
-      />
-      <TextInput
-        name={"email"}
-        type="email"
-        placeholder="ایمیل"
-        error={""}
-        className="my-2 w-full"
-      />
-      <TextInput
-        name={"password"}
-        type="password"
-        placeholder="رمز عبور"
-        error={""}
-        className="my-2 w-full"
-      />
-      <Button
-        className="mt-2"
-        kind="positive"
-        type="submit"
-        name="ثبت نام"
-        onClick={onSubmit}
-      />
+      <Form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full"
+        error={result.error?.message}
+      >
+        <TextInput
+          type="text"
+          placeholder="نام یا لقب شما"
+          error={errors.displayName?.message}
+          className="my-2 w-full"
+          {...register("displayName", {
+            required: ErrorMessageRequiredField,
+            maxLength: {
+              value: 128,
+              message: ErrorMessageMaxLength(128),
+            },
+          })}
+        />
+        <TextInput
+          type="email"
+          placeholder="ایمیل"
+          error={errors.email?.message}
+          className="my-2 w-full"
+          {...register("email", {
+            required: ErrorMessageRequiredField,
+            pattern: {
+              value: ValidationPatternEmail,
+              message: ErrorMessageInvalidEmail,
+            },
+          })}
+        />
+        <TextInput
+          type="password"
+          placeholder="رمز عبور"
+          error={errors.password?.message}
+          className="my-2 w-full"
+          {...register("password", {
+            required: ErrorMessageRequiredField,
+          })}
+        />
+        <Button
+          className="mt-2"
+          kind="positive"
+          type="submit"
+          name="ثبت نام"
+          disabled={!isValid}
+        />
+      </Form>
       <Button
         className="mt-6"
         kind="ghost"
@@ -53,4 +102,4 @@ const Login: FC = () => {
   );
 };
 
-export default Login;
+export default Register;

@@ -6,10 +6,10 @@ import {
   ErrorMessageInvalidEmail,
   ErrorMessageRequiredField,
 } from "consts/errors";
-import localStorageKeys from "consts/localStorageKeys";
 import { ValidationPatternEmail } from "consts/validationPatterns";
 import { useUserLoginMutation } from "graphql/generated/graphql";
-import { FC, useEffect } from "react";
+import { useLogin } from "hooks/useLogin";
+import { FC } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { AuthRoutePaths } from "routes";
@@ -29,12 +29,7 @@ const Login: FC = () => {
 
   const [loginMutation, result] = useUserLoginMutation();
 
-  // set the jwt token to localStorage in case of a successful login
-  useEffect(() => {
-    if (result.data?.login) {
-      localStorage.setItem(localStorageKeys.token, result.data?.login);
-    }
-  }, [result.data?.login]);
+  useLogin(result.data?.login);
 
   const onSubmit = (data: LoginFormData) => {
     loginMutation({ variables: { input: data } });

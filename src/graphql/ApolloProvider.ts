@@ -1,6 +1,8 @@
+import localStorageKeys from "consts/localStorageKeys";
+import { getEnvVariable } from "utils/env";
+
 import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { getEnvVariable } from "utils/env";
 
 const httpLink = createHttpLink({
   uri: getEnvVariable(
@@ -11,7 +13,7 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers: passedHeaders }) => {
   // get the authentication token from local storage if it exists
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem(localStorageKeys.token);
   // return the headers to the context so httpLink can read them
   const headers = token
     ? { ...passedHeaders, authorization: `Bearer ${token}` }

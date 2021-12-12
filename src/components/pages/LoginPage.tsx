@@ -1,5 +1,5 @@
-import MetaTags from "components/MetaTags";
-import LoginBox from "features/LoginBox";
+import MetaTags from "components/atoms/MetaTags";
+import LoginBox from "components/organisms/LoginBox";
 import { FC } from "react";
 
 const LoginPage: FC = () => {

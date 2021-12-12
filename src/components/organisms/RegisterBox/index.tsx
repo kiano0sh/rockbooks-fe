@@ -1,7 +1,7 @@
-import Button from "components/Button";
-import Card from "components/Card";
-import Form from "components/Form";
-import TextInput from "components/TextInput";
+import Button from "components/atoms/Button";
+import Card from "components/atoms/Card";
+import Form from "components/atoms/Form";
+import TextInput from "components/atoms/TextInput";
 import {
   ErrorMessageInvalidEmail,
   ErrorMessageMaxLength,

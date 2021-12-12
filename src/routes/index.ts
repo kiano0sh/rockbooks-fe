@@ -1,5 +1,10 @@
 export enum AuthRoutePaths {
-  root = "/",
   login = "/login",
   register = "/register",
+}
+
+export enum MainRoutePaths {
+  root = "/",
+  home = "/home",
+  book = "/book/:name",
 }

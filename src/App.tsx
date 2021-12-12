@@ -2,9 +2,10 @@ import "./index.css";
 
 import { ApolloProvider } from "@apollo/client";
 
-import MetaTags from "./components/MetaTags";
+import MetaTags from "./components/atoms/MetaTags";
 import client from "./graphql/ApolloProvider";
 import AuthRoutes from "./routes/AuthRoutes";
+import MainRoutes from "./routes/MainRoutes";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <MetaTags />
       <ApolloProvider client={client}>
         <AuthRoutes />
+        <MainRoutes />
       </ApolloProvider>
     </>
   );

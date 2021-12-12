@@ -1,5 +1,5 @@
-import MetaTags from "components/MetaTags";
-import RegisterBox from "features/RegisterBox";
+import MetaTags from "components/atoms/MetaTags";
+import RegisterBox from "components/organisms/RegisterBox";
 import { FC } from "react";
 
 const RegisterPage: FC = () => {

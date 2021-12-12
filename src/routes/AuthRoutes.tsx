@@ -1,25 +1,20 @@
+import { useNavigateToHome } from "hooks/useNavigateToHome";
 import AuthLayout from "layouts/AuthLayout";
-import { FC, lazy, Suspense, useEffect } from "react";
-import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
-import { AuthRoutePaths } from ".";
+import { FC, lazy, Suspense } from "react";
+import { Route, Routes } from "react-router-dom";
 
-const LoginPage = lazy(() => import("pages/LoginPage"));
-const RegisterPage = lazy(() => import("pages/RegisterPage"));
+import { AuthRoutePaths, MainRoutePaths } from "./";
+
+const LoginPage = lazy(() => import("components/pages/LoginPage"));
+const RegisterPage = lazy(() => import("components/pages/RegisterPage"));
 
 const AuthRoutes: FC = (): JSX.Element => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (location.pathname === AuthRoutePaths.root) {
-      navigate(AuthRoutePaths.login);
-    }
-  }, [location, navigate]);
+  useNavigateToHome();
 
   return (
     <Suspense fallback={"Loading..."}>
       <Routes>
-        <Route path={AuthRoutePaths.root} element={<AuthLayout />}>
+        <Route path={MainRoutePaths.root} element={<AuthLayout />}>
           <Route path={AuthRoutePaths.login} element={<LoginPage />} />
           <Route path={AuthRoutePaths.register} element={<RegisterPage />} />
         </Route>

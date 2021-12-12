@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Outlet, useNavigate } from "react-router";
-import Footer from "components/Footer";
-import { AuthRoutePaths } from "routes";
+import Footer from "components/atoms/Footer";
+import { MainRoutePaths } from "routes";
 
 const AuthLayout: FC = (): JSX.Element => {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const AuthLayout: FC = (): JSX.Element => {
           alt="rockbooks-logo"
           className="w-52 mb-16 cursor-pointer"
           onClick={() => {
-            navigate(AuthRoutePaths.login);
+            navigate(MainRoutePaths.home);
           }}
         />
         <Outlet />

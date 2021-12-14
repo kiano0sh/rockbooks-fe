@@ -1,3 +1,4 @@
+import Book from "components/templates/Book";
 import { useNavigateToHome } from "hooks/useNavigateToHome";
 import MainLayout from "layouts/MainLayout";
 import { FC, lazy, Suspense } from "react";
@@ -15,6 +16,9 @@ const MainRoutes: FC = (): JSX.Element => {
       <Routes>
         <Route path={MainRoutePaths.root} element={<MainLayout />}>
           <Route path={MainRoutePaths.home} element={<HomePage />} />
+          <Route path={MainRoutePaths.book} element={<Book />}>
+            <Route path={":id"} element={<Book />} />
+          </Route>
         </Route>
       </Routes>
     </Suspense>

@@ -6,5 +6,5 @@ export enum AuthRoutePaths {
 export enum MainRoutePaths {
   root = "/",
   home = "/home",
-  book = "/book/:name",
+  book = "/book",
 }

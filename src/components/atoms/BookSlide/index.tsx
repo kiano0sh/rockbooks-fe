@@ -5,6 +5,7 @@ import { MainRoutePaths } from "routes";
 
 interface IBookSlide extends IClassName {
   id: number;
+  index: number;
   name: string;
   author: string;
   cover: string;
@@ -14,6 +15,7 @@ interface IBookSlide extends IClassName {
 
 const BookSlide: FC<IBookSlide> = ({
   id,
+  index,
   name,
   author,
   cover,
@@ -26,12 +28,7 @@ const BookSlide: FC<IBookSlide> = ({
   const selectedButton = classNames({
     "w-96 h-60": !selected,
     "w-[52rem] h-[30rem]": selected,
-    "transition-all delay-150 duration-200 ease-in-out": selected,
-  });
-
-  const selectedText = classNames({
-    "top-[84%]": !selected,
-    "top-[92%]": selected,
+    "delay-150 duration-100 ease-linear": selected,
   });
 
   const onSlideClicked = () => {
@@ -39,12 +36,12 @@ const BookSlide: FC<IBookSlide> = ({
       navigate(`${MainRoutePaths.book}/${id}`);
       return;
     }
-    handleSelectSlid(id);
+    handleSelectSlid(index);
   };
 
   return (
     <button
-      className={`shadow flex flex-col justify-start rounded-lg relative cursor-pointer ${selectedButton} ${className} `}
+      className={`shadow flex flex-col justify-start rounded-lg relative cursor-pointer transition-all ${selectedButton} ${className} `}
       onClick={onSlideClicked}
     >
       <img
@@ -53,7 +50,7 @@ const BookSlide: FC<IBookSlide> = ({
         className="w-full h-full rounded-lg shadow-lg"
       />
       <div
-        className={`bg-black absolute w-full py-2 opacity-80 rounded-b-lg ${selectedText}`}
+        className={`bg-black absolute w-full py-2 opacity-80 rounded-b-lg bottom-0`}
       >
         <p className="mr-2 text-white font-semibold text-right">
           {name} | {author}

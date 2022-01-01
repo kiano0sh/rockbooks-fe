@@ -1,24 +1,21 @@
 import classNames from "classnames";
+import { ISliderData } from "components/organisms/Slider";
 import { FC } from "react";
 import { useNavigate } from "react-router";
 import { MainRoutePaths } from "routes";
+import { getEnvVariable } from "../../../utils/env";
 
-interface IBookSlide extends IClassName {
-  id: number;
+interface ISlide extends IClassName, ISliderData {
   index: number;
-  name: string;
-  author: string;
-  cover: string;
   selected: boolean;
   handleSelectSlid: (id: number) => void;
 }
 
-const BookSlide: FC<IBookSlide> = ({
+const Slide: FC<ISlide> = ({
   id,
   index,
-  name,
-  author,
-  cover,
+  title,
+  wallpaper,
   selected,
   handleSelectSlid,
   className = "",
@@ -45,19 +42,22 @@ const BookSlide: FC<IBookSlide> = ({
       onClick={onSlideClicked}
     >
       <img
-        src={cover}
-        alt={name}
+        src={
+          getEnvVariable(
+            "REACT_APP_MEDIA_FILE_SERVER",
+            "http://localhost:8080/"
+          ) + wallpaper
+        }
+        alt={title}
         className="w-full h-full rounded-lg shadow-lg"
       />
       <div
         className={`bg-black absolute w-full py-2 opacity-80 rounded-b-lg bottom-0`}
       >
-        <p className="mr-2 text-white font-semibold text-right">
-          {name} | {author}
-        </p>
+        <p className="mr-2 text-white font-semibold text-right">{title}</p>
       </div>
     </button>
   );
 };
 
-export default BookSlide;
+export default Slide;

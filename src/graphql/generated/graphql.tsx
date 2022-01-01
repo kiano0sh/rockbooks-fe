@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import { IGraphQLResolverContext } from './context';
 import { DocumentNode } from 'graphql';
 import * as Apollo from '@apollo/client';
@@ -16,23 +16,25 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Upload: any;
 };
 
 export type IGraphQLAuthor = {
   __typename?: 'Author';
-  book?: Maybe<Array<IGraphQLBook>>;
+  books?: Maybe<Array<IGraphQLBook>>;
+  id: Scalars['ID'];
   name: Scalars['String'];
-  publishers?: Maybe<Array<IGraphQLPublisher>>;
 };
 
 export type IGraphQLBook = {
   __typename?: 'Book';
-  audios?: Maybe<Array<IGraphQLBookAudio>>;
   author: IGraphQLAuthor;
+  cover: Scalars['String'];
   createdAt: Scalars['String'];
+  id: Scalars['ID'];
   name: Scalars['String'];
-  pages?: Maybe<Array<IGraphQLBookPage>>;
   publisher: IGraphQLPublisher;
+  wallpaper: Scalars['String'];
 };
 
 export type IGraphQLBookAudio = {
@@ -43,17 +45,30 @@ export type IGraphQLBookAudio = {
   createdBy: IGraphQLUser;
   cursorEnds: Scalars['Int'];
   cursorStarts: Scalars['Int'];
+  id: Scalars['ID'];
 };
 
 export type IGraphQLBookPage = {
   __typename?: 'BookPage';
   content: Scalars['String'];
+  id: Scalars['ID'];
   pageNumber: Scalars['Int'];
+};
+
+export type IGraphQLBookPagesWithPagination = {
+  __typename?: 'BookPagesWithPagination';
+  bookPages?: Maybe<Array<Maybe<IGraphQLBookPage>>>;
+  pagination: IGraphQLPaginationType;
+};
+
+export type IGraphQLBooksWithPagination = {
+  __typename?: 'BooksWithPagination';
+  books?: Maybe<Array<Maybe<IGraphQLBook>>>;
+  pagination: IGraphQLPaginationType;
 };
 
 export type IGraphQLCreateAuthorInput = {
   name: Scalars['String'];
-  publisherIds?: InputMaybe<Array<Scalars['ID']>>;
 };
 
 export type IGraphQLCreateBookAudioInput = {
@@ -65,18 +80,14 @@ export type IGraphQLCreateBookAudioInput = {
 
 export type IGraphQLCreateBookInput = {
   authorId: Scalars['ID'];
+  bookFile: Scalars['Upload'];
+  coverFile: Scalars['Upload'];
   name: Scalars['String'];
   publisherId: Scalars['ID'];
-};
-
-export type IGraphQLCreateBookPageInput = {
-  bookId: Scalars['ID'];
-  content: Scalars['String'];
-  pageNumber: Scalars['Int'];
+  wallpaperFile: Scalars['Upload'];
 };
 
 export type IGraphQLCreatePublisherInput = {
-  authorIds?: InputMaybe<Array<Scalars['ID']>>;
   name: Scalars['String'];
 };
 
@@ -90,12 +101,10 @@ export type IGraphQLMutation = {
   createAuthor: IGraphQLAuthor;
   createBook: IGraphQLBook;
   createBookAudio: IGraphQLBookAudio;
-  createBookPage: IGraphQLBookPage;
   createPublisher: IGraphQLPublisher;
   deleteAuthor: Scalars['Boolean'];
   deleteBook: Scalars['Boolean'];
   deleteBookAudio: Scalars['Boolean'];
-  deleteBookPage: Scalars['Boolean'];
   deletePublisher: Scalars['Boolean'];
   login: Scalars['String'];
   refreshToken: Scalars['String'];
@@ -103,7 +112,6 @@ export type IGraphQLMutation = {
   updateAuthor: IGraphQLAuthor;
   updateBook: IGraphQLBook;
   updateBookAudio: IGraphQLBookAudio;
-  updateBookPage: IGraphQLBookPage;
   updatePublisher: IGraphQLPublisher;
 };
 
@@ -123,11 +131,6 @@ export type IGraphQLMutationCreateBookAudioArgs = {
 };
 
 
-export type IGraphQLMutationCreateBookPageArgs = {
-  input: IGraphQLCreateBookPageInput;
-};
-
-
 export type IGraphQLMutationCreatePublisherArgs = {
   input: IGraphQLCreatePublisherInput;
 };
@@ -144,11 +147,6 @@ export type IGraphQLMutationDeleteBookArgs = {
 
 
 export type IGraphQLMutationDeleteBookAudioArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type IGraphQLMutationDeleteBookPageArgs = {
   id: Scalars['ID'];
 };
 
@@ -188,31 +186,47 @@ export type IGraphQLMutationUpdateBookAudioArgs = {
 };
 
 
-export type IGraphQLMutationUpdateBookPageArgs = {
-  input: IGraphQLUpdateBookPageInput;
-};
-
-
 export type IGraphQLMutationUpdatePublisherArgs = {
   input: IGraphQLUpdatePublisherInput;
 };
 
+export type IGraphQLPaginationInput = {
+  limit?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
+  sortBy?: InputMaybe<IGraphQLSortByEnum>;
+  sortOrder?: InputMaybe<IGraphQLSortOrderEnum>;
+};
+
+export type IGraphQLPaginationType = {
+  __typename?: 'PaginationType';
+  limit: Scalars['Int'];
+  page: Scalars['Int'];
+  total: Scalars['Int'];
+};
+
 export type IGraphQLPublisher = {
   __typename?: 'Publisher';
-  authors?: Maybe<Array<IGraphQLAuthor>>;
-  book?: Maybe<Array<IGraphQLBook>>;
+  books?: Maybe<Array<IGraphQLBook>>;
+  id: Scalars['ID'];
   name: Scalars['String'];
 };
 
 export type IGraphQLQuery = {
   __typename?: 'Query';
+  audios?: Maybe<Array<Maybe<IGraphQLBookAudio>>>;
   author: IGraphQLAuthor;
   authors?: Maybe<Array<Maybe<IGraphQLAuthor>>>;
   book: IGraphQLBook;
-  books?: Maybe<Array<Maybe<IGraphQLBook>>>;
+  books: IGraphQLBooksWithPagination;
+  pages: IGraphQLBookPagesWithPagination;
   publisher: IGraphQLPublisher;
   publishers?: Maybe<Array<Maybe<IGraphQLPublisher>>>;
   self: IGraphQLUser;
+};
+
+
+export type IGraphQLQueryAudiosArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -223,6 +237,17 @@ export type IGraphQLQueryAuthorArgs = {
 
 export type IGraphQLQueryBookArgs = {
   id: Scalars['ID'];
+};
+
+
+export type IGraphQLQueryBooksArgs = {
+  pagination?: InputMaybe<IGraphQLPaginationInput>;
+};
+
+
+export type IGraphQLQueryPagesArgs = {
+  id: Scalars['ID'];
+  pagination?: InputMaybe<IGraphQLPaginationInput>;
 };
 
 
@@ -240,10 +265,20 @@ export type IGraphQLRegisterInput = {
   password: Scalars['String'];
 };
 
+export enum IGraphQLSortByEnum {
+  CreatedAt = 'CreatedAt',
+  Id = 'Id',
+  UpdatedAt = 'UpdatedAt'
+}
+
+export enum IGraphQLSortOrderEnum {
+  Asc = 'ASC',
+  Desc = 'DESC'
+}
+
 export type IGraphQLUpdateAuthorInput = {
   id: Scalars['ID'];
   name: Scalars['String'];
-  publisherIds?: InputMaybe<Array<Scalars['ID']>>;
 };
 
 export type IGraphQLUpdateBookAudioInput = {
@@ -261,15 +296,7 @@ export type IGraphQLUpdateBookInput = {
   publisherId: Scalars['ID'];
 };
 
-export type IGraphQLUpdateBookPageInput = {
-  bookId: Scalars['ID'];
-  content: Scalars['String'];
-  id: Scalars['ID'];
-  pageNumber: Scalars['Int'];
-};
-
 export type IGraphQLUpdatePublisherInput = {
-  authorIds?: InputMaybe<Array<Scalars['ID']>>;
   id: Scalars['ID'];
   name: Scalars['String'];
 };
@@ -354,26 +381,31 @@ export type IGraphQLResolversTypes = {
   Book: ResolverTypeWrapper<IGraphQLBook>;
   BookAudio: ResolverTypeWrapper<IGraphQLBookAudio>;
   BookPage: ResolverTypeWrapper<IGraphQLBookPage>;
+  BookPagesWithPagination: ResolverTypeWrapper<IGraphQLBookPagesWithPagination>;
+  BooksWithPagination: ResolverTypeWrapper<IGraphQLBooksWithPagination>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   CreateAuthorInput: IGraphQLCreateAuthorInput;
   CreateBookAudioInput: IGraphQLCreateBookAudioInput;
   CreateBookInput: IGraphQLCreateBookInput;
-  CreateBookPageInput: IGraphQLCreateBookPageInput;
   CreatePublisherInput: IGraphQLCreatePublisherInput;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   LoginInput: IGraphQLLoginInput;
   Mutation: ResolverTypeWrapper<{}>;
+  PaginationInput: IGraphQLPaginationInput;
+  PaginationType: ResolverTypeWrapper<IGraphQLPaginationType>;
   Publisher: ResolverTypeWrapper<IGraphQLPublisher>;
   Query: ResolverTypeWrapper<{}>;
   RefreshTokenInput: IGraphQLRefreshTokenInput;
   RegisterInput: IGraphQLRegisterInput;
+  SortByEnum: IGraphQLSortByEnum;
+  SortOrderEnum: IGraphQLSortOrderEnum;
   String: ResolverTypeWrapper<Scalars['String']>;
   UpdateAuthorInput: IGraphQLUpdateAuthorInput;
   UpdateBookAudioInput: IGraphQLUpdateBookAudioInput;
   UpdateBookInput: IGraphQLUpdateBookInput;
-  UpdateBookPageInput: IGraphQLUpdateBookPageInput;
   UpdatePublisherInput: IGraphQLUpdatePublisherInput;
+  Upload: ResolverTypeWrapper<Scalars['Upload']>;
   User: ResolverTypeWrapper<IGraphQLUser>;
 };
 
@@ -383,16 +415,19 @@ export type IGraphQLResolversParentTypes = {
   Book: IGraphQLBook;
   BookAudio: IGraphQLBookAudio;
   BookPage: IGraphQLBookPage;
+  BookPagesWithPagination: IGraphQLBookPagesWithPagination;
+  BooksWithPagination: IGraphQLBooksWithPagination;
   Boolean: Scalars['Boolean'];
   CreateAuthorInput: IGraphQLCreateAuthorInput;
   CreateBookAudioInput: IGraphQLCreateBookAudioInput;
   CreateBookInput: IGraphQLCreateBookInput;
-  CreateBookPageInput: IGraphQLCreateBookPageInput;
   CreatePublisherInput: IGraphQLCreatePublisherInput;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   LoginInput: IGraphQLLoginInput;
   Mutation: {};
+  PaginationInput: IGraphQLPaginationInput;
+  PaginationType: IGraphQLPaginationType;
   Publisher: IGraphQLPublisher;
   Query: {};
   RefreshTokenInput: IGraphQLRefreshTokenInput;
@@ -401,25 +436,26 @@ export type IGraphQLResolversParentTypes = {
   UpdateAuthorInput: IGraphQLUpdateAuthorInput;
   UpdateBookAudioInput: IGraphQLUpdateBookAudioInput;
   UpdateBookInput: IGraphQLUpdateBookInput;
-  UpdateBookPageInput: IGraphQLUpdateBookPageInput;
   UpdatePublisherInput: IGraphQLUpdatePublisherInput;
+  Upload: Scalars['Upload'];
   User: IGraphQLUser;
 };
 
 export type IGraphQLAuthorResolvers<ContextType = IGraphQLResolverContext, ParentType extends IGraphQLResolversParentTypes['Author'] = IGraphQLResolversParentTypes['Author']> = {
-  book?: Resolver<Maybe<Array<IGraphQLResolversTypes['Book']>>, ParentType, ContextType>;
+  books?: Resolver<Maybe<Array<IGraphQLResolversTypes['Book']>>, ParentType, ContextType>;
+  id?: Resolver<IGraphQLResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<IGraphQLResolversTypes['String'], ParentType, ContextType>;
-  publishers?: Resolver<Maybe<Array<IGraphQLResolversTypes['Publisher']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type IGraphQLBookResolvers<ContextType = IGraphQLResolverContext, ParentType extends IGraphQLResolversParentTypes['Book'] = IGraphQLResolversParentTypes['Book']> = {
-  audios?: Resolver<Maybe<Array<IGraphQLResolversTypes['BookAudio']>>, ParentType, ContextType>;
   author?: Resolver<IGraphQLResolversTypes['Author'], ParentType, ContextType>;
+  cover?: Resolver<IGraphQLResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<IGraphQLResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<IGraphQLResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<IGraphQLResolversTypes['String'], ParentType, ContextType>;
-  pages?: Resolver<Maybe<Array<IGraphQLResolversTypes['BookPage']>>, ParentType, ContextType>;
   publisher?: Resolver<IGraphQLResolversTypes['Publisher'], ParentType, ContextType>;
+  wallpaper?: Resolver<IGraphQLResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -430,12 +466,26 @@ export type IGraphQLBookAudioResolvers<ContextType = IGraphQLResolverContext, Pa
   createdBy?: Resolver<IGraphQLResolversTypes['User'], ParentType, ContextType>;
   cursorEnds?: Resolver<IGraphQLResolversTypes['Int'], ParentType, ContextType>;
   cursorStarts?: Resolver<IGraphQLResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<IGraphQLResolversTypes['ID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type IGraphQLBookPageResolvers<ContextType = IGraphQLResolverContext, ParentType extends IGraphQLResolversParentTypes['BookPage'] = IGraphQLResolversParentTypes['BookPage']> = {
   content?: Resolver<IGraphQLResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<IGraphQLResolversTypes['ID'], ParentType, ContextType>;
   pageNumber?: Resolver<IGraphQLResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type IGraphQLBookPagesWithPaginationResolvers<ContextType = IGraphQLResolverContext, ParentType extends IGraphQLResolversParentTypes['BookPagesWithPagination'] = IGraphQLResolversParentTypes['BookPagesWithPagination']> = {
+  bookPages?: Resolver<Maybe<Array<Maybe<IGraphQLResolversTypes['BookPage']>>>, ParentType, ContextType>;
+  pagination?: Resolver<IGraphQLResolversTypes['PaginationType'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type IGraphQLBooksWithPaginationResolvers<ContextType = IGraphQLResolverContext, ParentType extends IGraphQLResolversParentTypes['BooksWithPagination'] = IGraphQLResolversParentTypes['BooksWithPagination']> = {
+  books?: Resolver<Maybe<Array<Maybe<IGraphQLResolversTypes['Book']>>>, ParentType, ContextType>;
+  pagination?: Resolver<IGraphQLResolversTypes['PaginationType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -443,12 +493,10 @@ export type IGraphQLMutationResolvers<ContextType = IGraphQLResolverContext, Par
   createAuthor?: Resolver<IGraphQLResolversTypes['Author'], ParentType, ContextType, RequireFields<IGraphQLMutationCreateAuthorArgs, 'input'>>;
   createBook?: Resolver<IGraphQLResolversTypes['Book'], ParentType, ContextType, RequireFields<IGraphQLMutationCreateBookArgs, 'input'>>;
   createBookAudio?: Resolver<IGraphQLResolversTypes['BookAudio'], ParentType, ContextType, RequireFields<IGraphQLMutationCreateBookAudioArgs, 'input'>>;
-  createBookPage?: Resolver<IGraphQLResolversTypes['BookPage'], ParentType, ContextType, RequireFields<IGraphQLMutationCreateBookPageArgs, 'input'>>;
   createPublisher?: Resolver<IGraphQLResolversTypes['Publisher'], ParentType, ContextType, RequireFields<IGraphQLMutationCreatePublisherArgs, 'input'>>;
   deleteAuthor?: Resolver<IGraphQLResolversTypes['Boolean'], ParentType, ContextType, RequireFields<IGraphQLMutationDeleteAuthorArgs, 'id'>>;
   deleteBook?: Resolver<IGraphQLResolversTypes['Boolean'], ParentType, ContextType, RequireFields<IGraphQLMutationDeleteBookArgs, 'id'>>;
   deleteBookAudio?: Resolver<IGraphQLResolversTypes['Boolean'], ParentType, ContextType, RequireFields<IGraphQLMutationDeleteBookAudioArgs, 'id'>>;
-  deleteBookPage?: Resolver<IGraphQLResolversTypes['Boolean'], ParentType, ContextType, RequireFields<IGraphQLMutationDeleteBookPageArgs, 'id'>>;
   deletePublisher?: Resolver<IGraphQLResolversTypes['Boolean'], ParentType, ContextType, RequireFields<IGraphQLMutationDeletePublisherArgs, 'id'>>;
   login?: Resolver<IGraphQLResolversTypes['String'], ParentType, ContextType, RequireFields<IGraphQLMutationLoginArgs, 'input'>>;
   refreshToken?: Resolver<IGraphQLResolversTypes['String'], ParentType, ContextType, RequireFields<IGraphQLMutationRefreshTokenArgs, 'input'>>;
@@ -456,26 +504,38 @@ export type IGraphQLMutationResolvers<ContextType = IGraphQLResolverContext, Par
   updateAuthor?: Resolver<IGraphQLResolversTypes['Author'], ParentType, ContextType, RequireFields<IGraphQLMutationUpdateAuthorArgs, 'input'>>;
   updateBook?: Resolver<IGraphQLResolversTypes['Book'], ParentType, ContextType, RequireFields<IGraphQLMutationUpdateBookArgs, 'input'>>;
   updateBookAudio?: Resolver<IGraphQLResolversTypes['BookAudio'], ParentType, ContextType, RequireFields<IGraphQLMutationUpdateBookAudioArgs, 'input'>>;
-  updateBookPage?: Resolver<IGraphQLResolversTypes['BookPage'], ParentType, ContextType, RequireFields<IGraphQLMutationUpdateBookPageArgs, 'input'>>;
   updatePublisher?: Resolver<IGraphQLResolversTypes['Publisher'], ParentType, ContextType, RequireFields<IGraphQLMutationUpdatePublisherArgs, 'input'>>;
 };
 
+export type IGraphQLPaginationTypeResolvers<ContextType = IGraphQLResolverContext, ParentType extends IGraphQLResolversParentTypes['PaginationType'] = IGraphQLResolversParentTypes['PaginationType']> = {
+  limit?: Resolver<IGraphQLResolversTypes['Int'], ParentType, ContextType>;
+  page?: Resolver<IGraphQLResolversTypes['Int'], ParentType, ContextType>;
+  total?: Resolver<IGraphQLResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type IGraphQLPublisherResolvers<ContextType = IGraphQLResolverContext, ParentType extends IGraphQLResolversParentTypes['Publisher'] = IGraphQLResolversParentTypes['Publisher']> = {
-  authors?: Resolver<Maybe<Array<IGraphQLResolversTypes['Author']>>, ParentType, ContextType>;
-  book?: Resolver<Maybe<Array<IGraphQLResolversTypes['Book']>>, ParentType, ContextType>;
+  books?: Resolver<Maybe<Array<IGraphQLResolversTypes['Book']>>, ParentType, ContextType>;
+  id?: Resolver<IGraphQLResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<IGraphQLResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type IGraphQLQueryResolvers<ContextType = IGraphQLResolverContext, ParentType extends IGraphQLResolversParentTypes['Query'] = IGraphQLResolversParentTypes['Query']> = {
+  audios?: Resolver<Maybe<Array<Maybe<IGraphQLResolversTypes['BookAudio']>>>, ParentType, ContextType, RequireFields<IGraphQLQueryAudiosArgs, 'id'>>;
   author?: Resolver<IGraphQLResolversTypes['Author'], ParentType, ContextType, RequireFields<IGraphQLQueryAuthorArgs, 'id'>>;
   authors?: Resolver<Maybe<Array<Maybe<IGraphQLResolversTypes['Author']>>>, ParentType, ContextType>;
   book?: Resolver<IGraphQLResolversTypes['Book'], ParentType, ContextType, RequireFields<IGraphQLQueryBookArgs, 'id'>>;
-  books?: Resolver<Maybe<Array<Maybe<IGraphQLResolversTypes['Book']>>>, ParentType, ContextType>;
+  books?: Resolver<IGraphQLResolversTypes['BooksWithPagination'], ParentType, ContextType, RequireFields<IGraphQLQueryBooksArgs, never>>;
+  pages?: Resolver<IGraphQLResolversTypes['BookPagesWithPagination'], ParentType, ContextType, RequireFields<IGraphQLQueryPagesArgs, 'id'>>;
   publisher?: Resolver<IGraphQLResolversTypes['Publisher'], ParentType, ContextType, RequireFields<IGraphQLQueryPublisherArgs, 'id'>>;
   publishers?: Resolver<Maybe<Array<Maybe<IGraphQLResolversTypes['Publisher']>>>, ParentType, ContextType>;
   self?: Resolver<IGraphQLResolversTypes['User'], ParentType, ContextType>;
 };
+
+export interface IGraphQLUploadScalarConfig extends GraphQLScalarTypeConfig<IGraphQLResolversTypes['Upload'], any> {
+  name: 'Upload';
+}
 
 export type IGraphQLUserResolvers<ContextType = IGraphQLResolverContext, ParentType extends IGraphQLResolversParentTypes['User'] = IGraphQLResolversParentTypes['User']> = {
   avatar?: Resolver<Maybe<IGraphQLResolversTypes['String']>, ParentType, ContextType>;
@@ -489,9 +549,13 @@ export type IGraphQLResolvers<ContextType = IGraphQLResolverContext> = {
   Book?: IGraphQLBookResolvers<ContextType>;
   BookAudio?: IGraphQLBookAudioResolvers<ContextType>;
   BookPage?: IGraphQLBookPageResolvers<ContextType>;
+  BookPagesWithPagination?: IGraphQLBookPagesWithPaginationResolvers<ContextType>;
+  BooksWithPagination?: IGraphQLBooksWithPaginationResolvers<ContextType>;
   Mutation?: IGraphQLMutationResolvers<ContextType>;
+  PaginationType?: IGraphQLPaginationTypeResolvers<ContextType>;
   Publisher?: IGraphQLPublisherResolvers<ContextType>;
   Query?: IGraphQLQueryResolvers<ContextType>;
+  Upload?: GraphQLScalarType;
   User?: IGraphQLUserResolvers<ContextType>;
 };
 
@@ -509,6 +573,20 @@ export type IGraphQLUserRegisterMutationVariables = Exact<{
 
 
 export type IGraphQLUserRegisterMutation = { __typename?: 'Mutation', register: string };
+
+export type IGraphQLBookQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type IGraphQLBookQuery = { __typename?: 'Query', book: { __typename?: 'Book', id: string, name: string, wallpaper: string, cover: string, createdAt: string, author: { __typename?: 'Author', id: string, name: string }, publisher: { __typename?: 'Publisher', id: string, name: string } } };
+
+export type IGraphQLBooksQueryVariables = Exact<{
+  pagination: IGraphQLPaginationInput;
+}>;
+
+
+export type IGraphQLBooksQuery = { __typename?: 'Query', books: { __typename?: 'BooksWithPagination', books?: Array<{ __typename?: 'Book', id: string, name: string, cover: string, wallpaper: string, createdAt: string, author: { __typename?: 'Author', id: string, name: string }, publisher: { __typename?: 'Publisher', id: string, name: string } } | null | undefined> | null | undefined, pagination: { __typename?: 'PaginationType', limit: number, page: number, total: number } } };
 
 
 export const UserLoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"userLogin"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}]}]}}]} as unknown as DocumentNode;
@@ -565,3 +643,61 @@ export function useUserRegisterMutation(baseOptions?: Apollo.MutationHookOptions
 export type UserRegisterMutationHookResult = ReturnType<typeof useUserRegisterMutation>;
 export type UserRegisterMutationResult = Apollo.MutationResult<IGraphQLUserRegisterMutation>;
 export type UserRegisterMutationOptions = Apollo.BaseMutationOptions<IGraphQLUserRegisterMutation, IGraphQLUserRegisterMutationVariables>;
+export const BookDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"book"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"book"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"wallpaper"}},{"kind":"Field","name":{"kind":"Name","value":"cover"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"publisher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __useBookQuery__
+ *
+ * To run a query within a React component, call `useBookQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBookQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBookQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useBookQuery(baseOptions: Apollo.QueryHookOptions<IGraphQLBookQuery, IGraphQLBookQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<IGraphQLBookQuery, IGraphQLBookQueryVariables>(BookDocument, options);
+      }
+export function useBookLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IGraphQLBookQuery, IGraphQLBookQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<IGraphQLBookQuery, IGraphQLBookQueryVariables>(BookDocument, options);
+        }
+export type BookQueryHookResult = ReturnType<typeof useBookQuery>;
+export type BookLazyQueryHookResult = ReturnType<typeof useBookLazyQuery>;
+export type BookQueryResult = Apollo.QueryResult<IGraphQLBookQuery, IGraphQLBookQueryVariables>;
+export const BooksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"books"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PaginationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"books"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"books"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"cover"}},{"kind":"Field","name":{"kind":"Name","value":"wallpaper"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"publisher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pagination"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"limit"}},{"kind":"Field","name":{"kind":"Name","value":"page"}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __useBooksQuery__
+ *
+ * To run a query within a React component, call `useBooksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBooksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBooksQuery({
+ *   variables: {
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function useBooksQuery(baseOptions: Apollo.QueryHookOptions<IGraphQLBooksQuery, IGraphQLBooksQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<IGraphQLBooksQuery, IGraphQLBooksQueryVariables>(BooksDocument, options);
+      }
+export function useBooksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IGraphQLBooksQuery, IGraphQLBooksQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<IGraphQLBooksQuery, IGraphQLBooksQueryVariables>(BooksDocument, options);
+        }
+export type BooksQueryHookResult = ReturnType<typeof useBooksQuery>;
+export type BooksLazyQueryHookResult = ReturnType<typeof useBooksLazyQuery>;
+export type BooksQueryResult = Apollo.QueryResult<IGraphQLBooksQuery, IGraphQLBooksQueryVariables>;

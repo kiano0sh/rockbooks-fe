@@ -11,7 +11,7 @@ export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?:
 const defaultOptions =  {}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
+  ID: number;
   String: string;
   Boolean: boolean;
   Int: number;
@@ -579,14 +579,22 @@ export type IGraphQLBookQueryVariables = Exact<{
 }>;
 
 
-export type IGraphQLBookQuery = { __typename?: 'Query', book: { __typename?: 'Book', id: string, name: string, wallpaper: string, cover: string, createdAt: string, author: { __typename?: 'Author', id: string, name: string }, publisher: { __typename?: 'Publisher', id: string, name: string } } };
+export type IGraphQLBookQuery = { __typename?: 'Query', book: { __typename?: 'Book', id: number, name: string, wallpaper: string, cover: string, createdAt: string, author: { __typename?: 'Author', id: number, name: string }, publisher: { __typename?: 'Publisher', id: number, name: string } } };
 
 export type IGraphQLBooksQueryVariables = Exact<{
   pagination: IGraphQLPaginationInput;
 }>;
 
 
-export type IGraphQLBooksQuery = { __typename?: 'Query', books: { __typename?: 'BooksWithPagination', books?: Array<{ __typename?: 'Book', id: string, name: string, cover: string, wallpaper: string, createdAt: string, author: { __typename?: 'Author', id: string, name: string }, publisher: { __typename?: 'Publisher', id: string, name: string } } | null | undefined> | null | undefined, pagination: { __typename?: 'PaginationType', limit: number, page: number, total: number } } };
+export type IGraphQLBooksQuery = { __typename?: 'Query', books: { __typename?: 'BooksWithPagination', books?: Array<{ __typename?: 'Book', id: number, name: string, cover: string, wallpaper: string, createdAt: string, author: { __typename?: 'Author', id: number, name: string }, publisher: { __typename?: 'Publisher', id: number, name: string } } | null | undefined> | null | undefined, pagination: { __typename?: 'PaginationType', limit: number, page: number, total: number } } };
+
+export type IGraphQLPagesQueryVariables = Exact<{
+  id: Scalars['ID'];
+  pagination: IGraphQLPaginationInput;
+}>;
+
+
+export type IGraphQLPagesQuery = { __typename?: 'Query', pages: { __typename?: 'BookPagesWithPagination', bookPages?: Array<{ __typename?: 'BookPage', content: string, pageNumber: number } | null | undefined> | null | undefined, pagination: { __typename?: 'PaginationType', limit: number, page: number, total: number } } };
 
 
 export const UserLoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"userLogin"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}]}]}}]} as unknown as DocumentNode;
@@ -701,3 +709,33 @@ export function useBooksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IGra
 export type BooksQueryHookResult = ReturnType<typeof useBooksQuery>;
 export type BooksLazyQueryHookResult = ReturnType<typeof useBooksLazyQuery>;
 export type BooksQueryResult = Apollo.QueryResult<IGraphQLBooksQuery, IGraphQLBooksQueryVariables>;
+export const PagesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"pages"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PaginationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pages"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bookPages"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"pageNumber"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pagination"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"limit"}},{"kind":"Field","name":{"kind":"Name","value":"page"}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __usePagesQuery__
+ *
+ * To run a query within a React component, call `usePagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePagesQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function usePagesQuery(baseOptions: Apollo.QueryHookOptions<IGraphQLPagesQuery, IGraphQLPagesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<IGraphQLPagesQuery, IGraphQLPagesQueryVariables>(PagesDocument, options);
+      }
+export function usePagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IGraphQLPagesQuery, IGraphQLPagesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<IGraphQLPagesQuery, IGraphQLPagesQueryVariables>(PagesDocument, options);
+        }
+export type PagesQueryHookResult = ReturnType<typeof usePagesQuery>;
+export type PagesLazyQueryHookResult = ReturnType<typeof usePagesLazyQuery>;
+export type PagesQueryResult = Apollo.QueryResult<IGraphQLPagesQuery, IGraphQLPagesQueryVariables>;

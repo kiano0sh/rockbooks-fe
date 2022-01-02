@@ -16,3 +16,5 @@ generates:
       withComponent: false
       documentMode: documentNode
       optimizeDocumentNode: true
+      scalars:
+        ID: number

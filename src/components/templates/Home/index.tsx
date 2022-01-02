@@ -1,7 +1,6 @@
 import Slider from "components/organisms/Slider";
-import { FC } from "react";
-
 import { useBooksQuery } from "graphql/generated/graphql";
+import { FC } from "react";
 
 const Home: FC = () => {
   const { data } = useBooksQuery({
@@ -10,7 +9,7 @@ const Home: FC = () => {
 
   const books = data?.books.books?.map((book) => {
     return {
-      id: (book?.id || 0) as number,
+      id: book?.id || 1,
       title: `${book?.name || ""} | ${book?.author.name || ""}`,
       wallpaper: book?.wallpaper || "",
     };

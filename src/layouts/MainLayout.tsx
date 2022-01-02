@@ -9,8 +9,8 @@ const MainLayout: FC = (): JSX.Element => {
   const navigate = useNavigate();
 
   return (
-    <div className="h-screen bg-gray-100 overflow-auto">
-      <div className="bg-white w-full flex justify-center h-16  mb-24 py-2">
+    <div className="h-screen bg-gray-100 overflow-auto flex flex-col min-h-screen">
+      <div className="bg-white w-full flex justify-center h-16 mb-16 py-2">
         <nav className="flex flex-row justify-between w-full sm:w-1/2">
           <div className="w-80 flex flex-row">
             <Button
@@ -39,7 +39,9 @@ const MainLayout: FC = (): JSX.Element => {
           />
         </nav>
       </div>
-      <Outlet />
+      <div className="mb-10">
+        <Outlet />
+      </div>
       <Footer />
     </div>
   );

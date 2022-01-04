@@ -55,7 +55,7 @@ const Book: FC = () => {
           }
         />
         <div className="flex flex-col items-center">
-          <Card className="w-[45rem] h-auto mb-4 mr-5">
+          <Card className="w-[45rem] h-auto mb-4 mr-5 flex-1">
             <text className="leading-relaxed whitespace-pre">
               {bookPages?.content}
             </text>

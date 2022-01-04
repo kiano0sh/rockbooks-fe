@@ -1,12 +1,18 @@
-import Button from "components/atoms/Button";
+import Button, { IButton } from "components/atoms/Button";
 import Card from "components/atoms/Card";
-import { FC, useState } from "react";
+import { FC, ReactNode, useState } from "react";
 
 interface IAccordion extends IClassName {
-  title: string;
+  title: string | ReactNode;
+  kind?: IButton["kind"];
 }
 
-const Accordion: FC<IAccordion> = ({ title, className = "", children }) => {
+const Accordion: FC<IAccordion> = ({
+  title,
+  className = "",
+  kind = "positive",
+  children,
+}) => {
   const [contentDisplay, setContentDisplay] = useState<"hidden" | "block">(
     "hidden"
   );
@@ -18,12 +24,8 @@ const Accordion: FC<IAccordion> = ({ title, className = "", children }) => {
             prevState === "hidden" ? "block" : "hidden"
           );
         }}
-        name={
-          <p>
-            صوت از <strong>{title}</strong>
-          </p>
-        }
-        kind="positive"
+        name={title}
+        kind={kind}
         className="w-96 transition outline-none p-4 h-12 text-right mb-1"
       />
       <Card className={`px-4 w-96 overflow-hidden mb-1 ${contentDisplay}`}>

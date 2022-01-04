@@ -20,7 +20,7 @@ const MainLayout: FC = (): JSX.Element => {
             {isAuthenticated ? (
               <Button
                 type="button"
-                className="mr-4"
+                className="mr-4 w-full md:w-4/5"
                 name="خروج"
                 onClick={() => {
                   userDispatch(logoutUser());

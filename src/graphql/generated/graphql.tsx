@@ -562,6 +562,13 @@ export type IGraphQLResolvers<ContextType = IGraphQLResolverContext> = {
 };
 
 
+export type IGraphQLCreateBookAudioMutationVariables = Exact<{
+  input: IGraphQLCreateBookAudioInput;
+}>;
+
+
+export type IGraphQLCreateBookAudioMutation = { __typename?: 'Mutation', createBookAudio: { __typename?: 'BookAudio', id: number, audio: string, cursorStarts: number, cursorEnds: number, createdBy: { __typename?: 'User', displayName: string, avatar?: string | null | undefined } } };
+
 export type IGraphQLUserLoginMutationVariables = Exact<{
   input: IGraphQLLoginInput;
 }>;
@@ -599,6 +606,33 @@ export type IGraphQLPagesQueryVariables = Exact<{
 export type IGraphQLPagesQuery = { __typename?: 'Query', pages: { __typename?: 'BookPagesWithPagination', bookPages?: Array<{ __typename?: 'BookPage', id: number, content: string, pageNumber: number, bookAudios?: Array<{ __typename?: 'BookAudio', id: number, cursorStarts: number, cursorEnds: number, createdAt: string, audio: string, createdBy: { __typename?: 'User', displayName: string, avatar?: string | null | undefined } } | null | undefined> | null | undefined } | null | undefined> | null | undefined, pagination: { __typename?: 'PaginationType', limit: number, page: number, total: number } } };
 
 
+export const CreateBookAudioDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createBookAudio"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateBookAudioInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createBookAudio"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"audio"}},{"kind":"Field","name":{"kind":"Name","value":"cursorStarts"}},{"kind":"Field","name":{"kind":"Name","value":"cursorEnds"}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}}]}}]}}]}}]} as unknown as DocumentNode;
+export type IGraphQLCreateBookAudioMutationFn = Apollo.MutationFunction<IGraphQLCreateBookAudioMutation, IGraphQLCreateBookAudioMutationVariables>;
+
+/**
+ * __useCreateBookAudioMutation__
+ *
+ * To run a mutation, you first call `useCreateBookAudioMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateBookAudioMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createBookAudioMutation, { data, loading, error }] = useCreateBookAudioMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateBookAudioMutation(baseOptions?: Apollo.MutationHookOptions<IGraphQLCreateBookAudioMutation, IGraphQLCreateBookAudioMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<IGraphQLCreateBookAudioMutation, IGraphQLCreateBookAudioMutationVariables>(CreateBookAudioDocument, options);
+      }
+export type CreateBookAudioMutationHookResult = ReturnType<typeof useCreateBookAudioMutation>;
+export type CreateBookAudioMutationResult = Apollo.MutationResult<IGraphQLCreateBookAudioMutation>;
+export type CreateBookAudioMutationOptions = Apollo.BaseMutationOptions<IGraphQLCreateBookAudioMutation, IGraphQLCreateBookAudioMutationVariables>;
 export const UserLoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"userLogin"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}]}]}}]} as unknown as DocumentNode;
 export type IGraphQLUserLoginMutationFn = Apollo.MutationFunction<IGraphQLUserLoginMutation, IGraphQLUserLoginMutationVariables>;
 

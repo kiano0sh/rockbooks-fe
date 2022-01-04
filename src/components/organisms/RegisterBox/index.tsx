@@ -32,7 +32,7 @@ const Register: FC = () => {
 
   const [registerMutation, result] = useUserRegisterMutation();
 
-  useLogin(result.data?.register as string);
+  useLogin(result.data?.register);
 
   const onSubmit = (data: RegisterFormData) => {
     registerMutation({ variables: { input: data } });

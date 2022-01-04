@@ -22,10 +22,10 @@ const UserDispatchContext = React.createContext<TDispatch | undefined>(
 const UserReducer = (state: TState, action: TUserActions): TState => {
   switch (action.type) {
     case "LOGIN_USER": {
+      const accessToken = action.accessToken;
       // Set auth token in localstorage
-      action.accessToken &&
-        localStorage.setItem(localStorageKeys.token, action.accessToken);
-      return { ...state, isAuthenticated: true };
+      accessToken && localStorage.setItem(localStorageKeys.token, accessToken);
+      return { ...state, isAuthenticated: !!accessToken };
     }
     case "LOGOUT_USER": {
       removeAuthorizationToken();

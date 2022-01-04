@@ -4,7 +4,7 @@ import { MainRoutePaths } from "routes";
 
 import { loginUser, useUserDispatch } from "../context";
 
-export function useLogin(token: string): void {
+export function useLogin(token?: string): void {
   const navigate = useNavigate();
 
   useEffect(() => {

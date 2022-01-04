@@ -1,12 +1,15 @@
 import Button from "components/atoms/Button";
 import Form from "components/atoms/Form";
 import Accordion from "components/molecules/Accordion";
+import { useUserState } from "context";
 import {
   IGraphQLBookAudio,
   useCreateBookAudioMutation,
 } from "graphql/generated/graphql";
 import { FC, FormEvent, useState } from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
+import { useNavigate } from "react-router";
+import { AuthRoutePaths } from "routes";
 import { concatMediaServer } from "utils/strings";
 
 interface ISideBookPlayer extends IClassName {
@@ -22,6 +25,8 @@ const SideBookPlayer: FC<ISideBookPlayer> = ({
   fetchAudios,
 }) => {
   const [audioBlob, setAudioBlob] = useState<File>();
+  const { isAuthenticated } = useUserState();
+  const navigate = useNavigate();
 
   const onRecordStop = (blobUrl: string, blob: Blob): void => {
     const audioFile = new File([blob], "demo.wav", { type: "audio/wav" });
@@ -56,46 +61,55 @@ const SideBookPlayer: FC<ISideBookPlayer> = ({
   return (
     <div className={className}>
       <div className={className}>
-        <Accordion title={"اضافه کردن صوت"} kind="primary">
-          <Form
-            onSubmit={onSubmit}
-            className="flex flex-col"
-            error={result.error?.message}
-          >
-            <div className="flex flex-row items-center mb-2">
-              <span className="flex h-3 w-3 ml-2">
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500">
-                  <span
-                    className={`${
-                      recording ? "animate-ping" : ""
-                    } absolute inline-flex h-3 w-3 rounded-full bg-sky-400 opacity-75`}
-                  />
+        {isAuthenticated ? (
+          <Accordion title={"اضافه کردن صوت"} kind="primary">
+            <Form
+              onSubmit={onSubmit}
+              className="flex flex-col"
+              error={result.error?.message}
+            >
+              <div className="flex flex-row items-center mb-2">
+                <span className="flex h-3 w-3 ml-2">
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500">
+                    <span
+                      className={`${
+                        recording ? "animate-ping" : ""
+                      } absolute inline-flex h-3 w-3 rounded-full bg-sky-400 opacity-75`}
+                    />
+                  </span>
                 </span>
-              </span>
-              <p>{recording ? "در حال ضبط" : "در انتظار ضبط"}</p>
-            </div>
-            <Button
-              onClick={startRecording}
-              type="button"
-              name="شروع ضبط"
-              kind="ghost"
-              className="mb-2"
-            />
-            <Button
-              onClick={stopRecording}
-              type="button"
-              name="پایان ضبط"
-              kind="ghost"
-              className="mb-2"
-            />
-            <Button
-              type="submit"
-              kind="positive"
-              name="ثبت"
-              disabled={!audioBlob}
-            />
-          </Form>
-        </Accordion>
+                <p>{recording ? "در حال ضبط" : "در انتظار ضبط"}</p>
+              </div>
+              <Button
+                onClick={startRecording}
+                type="button"
+                name="شروع ضبط"
+                kind="ghost"
+                className="mb-2"
+              />
+              <Button
+                onClick={stopRecording}
+                type="button"
+                name="پایان ضبط"
+                kind="ghost"
+                className="mb-2"
+              />
+              <Button
+                type="submit"
+                kind="positive"
+                name="ثبت"
+                disabled={!audioBlob}
+              />
+            </Form>
+          </Accordion>
+        ) : (
+          <Button
+            name="ورود و ثبت صوت"
+            kind="ghost"
+            onClick={() => navigate(AuthRoutePaths.login)}
+            className="mb-2"
+          />
+        )}
       </div>
       {bookAudios?.map((bookAudio) => {
         return (

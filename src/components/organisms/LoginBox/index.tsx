@@ -29,7 +29,7 @@ const Login: FC = () => {
 
   const [loginMutation, result] = useUserLoginMutation();
 
-  useLogin(result.data?.login as string);
+  useLogin(result.data?.login);
 
   const onSubmit = (data: LoginFormData) => {
     loginMutation({ variables: { input: data } });

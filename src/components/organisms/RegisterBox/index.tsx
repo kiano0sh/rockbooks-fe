@@ -8,8 +8,8 @@ import {
   ErrorMessageRequiredField,
 } from "consts/errors";
 import { ValidationPatternEmail } from "consts/validationPatterns";
+import { loginUser, useUserDispatch } from "context";
 import { useUserRegisterMutation } from "graphql/generated/graphql";
-import { useLogin } from "hooks/useLogin";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
@@ -32,7 +32,8 @@ const Register: FC = () => {
 
   const [registerMutation, result] = useUserRegisterMutation();
 
-  useLogin(result.data?.register);
+  const userDispatch = useUserDispatch();
+  userDispatch(loginUser({ accessToken: result.data?.register }));
 
   const onSubmit = (data: RegisterFormData) => {
     registerMutation({ variables: { input: data } });

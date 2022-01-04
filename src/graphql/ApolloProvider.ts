@@ -16,7 +16,7 @@ const authLink = setContext((_, { headers: passedHeaders }) => {
   const token = localStorage.getItem(localStorageKeys.token);
   // return the headers to the context so httpLink can read them
   const headers = token
-    ? { ...passedHeaders, authorization: `Bearer ${token}` }
+    ? { ...passedHeaders, authorization: token }
     : { ...passedHeaders };
 
   return {

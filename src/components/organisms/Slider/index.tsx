@@ -1,4 +1,4 @@
-import Slide from "components/atoms/Slide";
+import Slide from "components/molecules/Slide";
 import { FC, useState } from "react";
 export interface ISliderData {
   id: number;

@@ -40,7 +40,7 @@ export type IGraphQLBook = {
 export type IGraphQLBookAudio = {
   __typename?: 'BookAudio';
   audio: Scalars['String'];
-  book: IGraphQLBook;
+  bookPage: IGraphQLBookPage;
   createdAt: Scalars['String'];
   createdBy: IGraphQLUser;
   cursorEnds: Scalars['Int'];
@@ -50,6 +50,7 @@ export type IGraphQLBookAudio = {
 
 export type IGraphQLBookPage = {
   __typename?: 'BookPage';
+  bookAudios?: Maybe<Array<Maybe<IGraphQLBookAudio>>>;
   content: Scalars['String'];
   id: Scalars['ID'];
   pageNumber: Scalars['Int'];
@@ -72,8 +73,8 @@ export type IGraphQLCreateAuthorInput = {
 };
 
 export type IGraphQLCreateBookAudioInput = {
-  audio: Scalars['String'];
-  bookId: Scalars['ID'];
+  audio: Scalars['Upload'];
+  bookPageID: Scalars['ID'];
   cursorEnds: Scalars['Int'];
   cursorStarts: Scalars['Int'];
 };
@@ -461,7 +462,7 @@ export type IGraphQLBookResolvers<ContextType = IGraphQLResolverContext, ParentT
 
 export type IGraphQLBookAudioResolvers<ContextType = IGraphQLResolverContext, ParentType extends IGraphQLResolversParentTypes['BookAudio'] = IGraphQLResolversParentTypes['BookAudio']> = {
   audio?: Resolver<IGraphQLResolversTypes['String'], ParentType, ContextType>;
-  book?: Resolver<IGraphQLResolversTypes['Book'], ParentType, ContextType>;
+  bookPage?: Resolver<IGraphQLResolversTypes['BookPage'], ParentType, ContextType>;
   createdAt?: Resolver<IGraphQLResolversTypes['String'], ParentType, ContextType>;
   createdBy?: Resolver<IGraphQLResolversTypes['User'], ParentType, ContextType>;
   cursorEnds?: Resolver<IGraphQLResolversTypes['Int'], ParentType, ContextType>;
@@ -471,6 +472,7 @@ export type IGraphQLBookAudioResolvers<ContextType = IGraphQLResolverContext, Pa
 };
 
 export type IGraphQLBookPageResolvers<ContextType = IGraphQLResolverContext, ParentType extends IGraphQLResolversParentTypes['BookPage'] = IGraphQLResolversParentTypes['BookPage']> = {
+  bookAudios?: Resolver<Maybe<Array<Maybe<IGraphQLResolversTypes['BookAudio']>>>, ParentType, ContextType>;
   content?: Resolver<IGraphQLResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<IGraphQLResolversTypes['ID'], ParentType, ContextType>;
   pageNumber?: Resolver<IGraphQLResolversTypes['Int'], ParentType, ContextType>;
@@ -594,7 +596,7 @@ export type IGraphQLPagesQueryVariables = Exact<{
 }>;
 
 
-export type IGraphQLPagesQuery = { __typename?: 'Query', pages: { __typename?: 'BookPagesWithPagination', bookPages?: Array<{ __typename?: 'BookPage', content: string, pageNumber: number } | null | undefined> | null | undefined, pagination: { __typename?: 'PaginationType', limit: number, page: number, total: number } } };
+export type IGraphQLPagesQuery = { __typename?: 'Query', pages: { __typename?: 'BookPagesWithPagination', bookPages?: Array<{ __typename?: 'BookPage', id: number, content: string, pageNumber: number, bookAudios?: Array<{ __typename?: 'BookAudio', id: number, cursorStarts: number, cursorEnds: number, createdAt: string, audio: string, createdBy: { __typename?: 'User', displayName: string, avatar?: string | null | undefined } } | null | undefined> | null | undefined } | null | undefined> | null | undefined, pagination: { __typename?: 'PaginationType', limit: number, page: number, total: number } } };
 
 
 export const UserLoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"userLogin"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}]}]}}]} as unknown as DocumentNode;
@@ -709,7 +711,7 @@ export function useBooksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IGra
 export type BooksQueryHookResult = ReturnType<typeof useBooksQuery>;
 export type BooksLazyQueryHookResult = ReturnType<typeof useBooksLazyQuery>;
 export type BooksQueryResult = Apollo.QueryResult<IGraphQLBooksQuery, IGraphQLBooksQueryVariables>;
-export const PagesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"pages"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PaginationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pages"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bookPages"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"pageNumber"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pagination"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"limit"}},{"kind":"Field","name":{"kind":"Name","value":"page"}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]}}]} as unknown as DocumentNode;
+export const PagesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"pages"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PaginationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pages"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bookPages"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"pageNumber"}},{"kind":"Field","name":{"kind":"Name","value":"bookAudios"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"cursorStarts"}},{"kind":"Field","name":{"kind":"Name","value":"cursorEnds"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"audio"}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pagination"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"limit"}},{"kind":"Field","name":{"kind":"Name","value":"page"}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]}}]} as unknown as DocumentNode;
 
 /**
  * __usePagesQuery__

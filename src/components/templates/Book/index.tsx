@@ -7,17 +7,26 @@ import {
   useBookQuery,
   usePagesLazyQuery,
 } from "graphql/generated/graphql";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 const Book: FC = () => {
+  const [page, setPage] = useState<number>(1);
   const { id } = useParams();
+
   const bookId = Number(id) || 1;
 
-  const { data } = useBookQuery({ variables: { id: bookId } });
   const [fetchPages, pagesData] = usePagesLazyQuery({
     variables: { id: bookId, pagination: { limit: 1, page: 1 } },
   });
+
+  useEffect(() => {
+    fetchPages({
+      variables: { id: bookId, pagination: { limit: 1, page } },
+    });
+  }, [page, fetchPages, bookId]);
+
+  const { data } = useBookQuery({ variables: { id: bookId } });
 
   useEffect(() => {
     fetchPages();
@@ -38,6 +47,12 @@ const Book: FC = () => {
       <div className="flex flex-row">
         <SideBookPlayer
           bookAudios={bookPages?.bookAudios as IGraphQLBookAudio[]}
+          bookPageID={bookPages?.id as number}
+          fetchAudios={() =>
+            fetchPages({
+              variables: { id: bookId, pagination: { limit: 1, page } },
+            })
+          }
         />
         <div className="flex flex-col items-center">
           <Card className="w-[45rem] h-auto mb-4 mr-5">
@@ -49,9 +64,7 @@ const Book: FC = () => {
             total={pagesData.data?.pages.pagination.total}
             page={pagesData.data?.pages.pagination.page}
             setPage={(page) => {
-              fetchPages({
-                variables: { id: bookId, pagination: { limit: 1, page } },
-              });
+              setPage(page);
             }}
           />
         </div>

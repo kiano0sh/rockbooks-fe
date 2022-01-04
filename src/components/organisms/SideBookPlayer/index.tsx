@@ -107,7 +107,7 @@ const SideBookPlayer: FC<ISideBookPlayer> = ({
             name="ورود و ثبت صوت"
             kind="ghost"
             onClick={() => navigate(AuthRoutePaths.login)}
-            className="mb-2"
+            className="mb-2 w-96"
           />
         )}
       </div>

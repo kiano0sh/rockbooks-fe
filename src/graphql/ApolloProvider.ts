@@ -1,10 +1,11 @@
 import localStorageKeys from "consts/localStorageKeys";
 import { getEnvVariable } from "utils/env";
 
-import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { createUploadLink } from "apollo-upload-client";
 
-const httpLink = createHttpLink({
+const httpLink = createUploadLink({
   uri: getEnvVariable(
     "REACT_APP_GRAPHQL_SERVER",
     "http://localhost:8080/graphql"

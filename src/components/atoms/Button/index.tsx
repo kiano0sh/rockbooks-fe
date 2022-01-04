@@ -1,10 +1,10 @@
 import { FC, ReactNode } from "react";
 import classNames from "classnames";
 
-interface IButton extends IClassName {
+export interface IButton extends IClassName {
   name: string | ReactNode;
   onClick?: () => void;
-  kind?: "positive" | "negative" | "ghost";
+  kind?: "positive" | "negative" | "ghost" | "primary";
   type?: "submit" | "reset" | "button";
   disabled?: boolean;
 }
@@ -20,6 +20,7 @@ const Button: FC<IButton> = ({
   const btnColorClass = classNames({
     "border-0 bg-blue-100": kind === "positive",
     "border-0 bg-red-100": kind === "negative",
+    "border-0 bg-blue-200": kind === "primary",
     "bg-transparent border-2 border-blue-100": kind === "ghost",
     "bg-gray-200 cursor-not-allowed text-gray-500": disabled,
   });

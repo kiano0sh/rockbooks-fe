@@ -25,7 +25,7 @@ const UserReducer = (state: TState, action: TUserActions): TState => {
       const accessToken = action.accessToken;
       // Set auth token in localstorage
       accessToken && localStorage.setItem(localStorageKeys.token, accessToken);
-      return { ...state, isAuthenticated: !!accessToken };
+      return { ...state, isAuthenticated: true };
     }
     case "LOGOUT_USER": {
       removeAuthorizationToken();

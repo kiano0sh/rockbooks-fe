@@ -1,10 +1,9 @@
-import classNames from "classnames";
-import { ISliderData } from "components/organisms/Slider";
-import { FC } from "react";
-import { useNavigate } from "react-router";
-import { MainRoutePaths } from "routes";
-import { getEnvVariable } from "../../../utils/env";
-import { concatMediaServer } from "../../../utils/strings";
+import classNames from 'classnames'
+import { ISliderData } from 'components/organisms/Slider'
+import { FC } from 'react'
+import { useNavigate } from 'react-router'
+import { MainRoutePaths } from 'routes'
+import { concatMediaServer } from 'utils/strings'
 
 interface ISlide extends IClassName, ISliderData {
   index: number;

@@ -1,8 +1,8 @@
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import classNames from "classnames";
 
 interface IButton extends IClassName {
-  name: string;
+  name: string | ReactNode;
   onClick?: () => void;
   kind?: "positive" | "negative" | "ghost";
   type?: "submit" | "reset" | "button";

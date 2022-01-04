@@ -7,12 +7,12 @@ import {
   ErrorMessageRequiredField,
 } from "consts/errors";
 import { ValidationPatternEmail } from "consts/validationPatterns";
-import { loginUser, useUserDispatch } from "context";
 import { useUserLoginMutation } from "graphql/generated/graphql";
-import { FC, useEffect } from "react";
+import { useLogin } from "hooks/useLogin";
+import { FC } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { AuthRoutePaths, MainRoutePaths } from "routes";
+import { AuthRoutePaths } from "routes";
 
 type LoginFormData = {
   email: string;
@@ -29,14 +29,7 @@ const Login: FC = () => {
 
   const [loginMutation, result] = useUserLoginMutation();
 
-  useEffect(() => {
-    if (result.data?.login) {
-      navigate(MainRoutePaths.home);
-    }
-  }, [result.data?.login, navigate]);
-
-  const userDispatch = useUserDispatch();
-  userDispatch(loginUser({ accessToken: result.data?.login }));
+  useLogin(result.data?.login as string);
 
   const onSubmit = (data: LoginFormData) => {
     loginMutation({ variables: { input: data } });

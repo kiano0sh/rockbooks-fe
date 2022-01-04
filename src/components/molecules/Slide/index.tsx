@@ -4,6 +4,7 @@ import { FC } from "react";
 import { useNavigate } from "react-router";
 import { MainRoutePaths } from "routes";
 import { getEnvVariable } from "../../../utils/env";
+import { concatMediaServer } from "../../../utils/strings";
 
 interface ISlide extends IClassName, ISliderData {
   index: number;
@@ -42,12 +43,7 @@ const Slide: FC<ISlide> = ({
       onClick={onSlideClicked}
     >
       <img
-        src={
-          getEnvVariable(
-            "REACT_APP_MEDIA_FILE_SERVER",
-            "http://localhost:8080/"
-          ) + wallpaper
-        }
+        src={concatMediaServer(wallpaper)}
         alt={title}
         className="w-full h-full rounded-lg shadow-lg"
       />

@@ -28,7 +28,6 @@ const UserReducer = (state: TState, action: TUserActions): TState => {
       return { ...state, isAuthenticated: true };
     }
     case "LOGOUT_USER": {
-      console.log("LOGOUT_USER");
       removeAuthorizationToken();
       return { ...state, isAuthenticated: false };
     }

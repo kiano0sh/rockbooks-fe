@@ -8,11 +8,9 @@ const useValidateToken = (): boolean => {
 
   useEffect(() => {
     const { isValid } = validateToken();
-    console.log(isValid);
     if (isValid) {
       dispatch(loginUser({}));
     } else {
-      console.log("logout");
       dispatch(logoutUser());
     }
     setIsValidating(false);

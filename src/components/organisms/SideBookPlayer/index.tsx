@@ -86,6 +86,7 @@ const SideBookPlayer: FC<ISideBookPlayer> = ({
                 name="شروع ضبط"
                 kind="ghost"
                 className="mb-2"
+                disabled={recording}
               />
               <Button
                 onClick={stopRecording}
@@ -93,6 +94,7 @@ const SideBookPlayer: FC<ISideBookPlayer> = ({
                 name="پایان ضبط"
                 kind="ghost"
                 className="mb-2"
+                disabled={!recording}
               />
               <Button
                 type="submit"
